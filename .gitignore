@@ -1,0 +1,12 @@
+# Environnement virtuel
+venv/
+
+# Données
+*.csv
+
+# Cache et fichiers compilés
+__pycache__/
+*.pyc
+
+# PyCharm
+.idea/
