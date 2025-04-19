@@ -3,6 +3,7 @@ venv/
 
 # Données
 *.csv
+data/
 
 # Cache et fichiers compilés
 __pycache__/
