@@ -7,7 +7,7 @@ import yfinance as yf
 
 def run():
     # --- Connexion à la base ---
-    db_path = "data/etf_data.db"
+    db_path = "./data/etf_data.db"
     table_name = "dtla_l"
     engine = create_engine(f"sqlite:///{db_path}")
 
