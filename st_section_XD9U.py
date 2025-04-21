@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 def run():
     # --- Connexion à la base ---
-    db_path = "data/etf_data.db"
+    db_path = "./data/etf_data.db"
     table_name = "xd9u_mi"
     engine = create_engine(f"sqlite:///{db_path}")
 
