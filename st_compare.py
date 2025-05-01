@@ -6,7 +6,7 @@ import numpy as np
 
 def run():
     # Titre
-    st.title("Comparaison des 4 ETFs (base 100 avec moyenne)")
+    st.subheader("📈 Portefeuille Harry Brown : croisement des ETF")
 
     # Connexion à la base
     db_path = "data/etf_data.db"
@@ -25,10 +25,10 @@ def run():
 
     # Création d’un DataFrame combiné
     df_all = pd.concat([
-        df_dtla.rename(columns={"Close": "DTLA"}),
-        df_xd9u.rename(columns={"Close": "XD9U"}),
-        df_xgdu.rename(columns={"Close": "XGDU"}),
-        df_zpr1.rename(columns={"Close": "ZPR1"})
+        df_dtla.rename(columns={"Close": "Oblig. US LT"}),
+        df_xd9u.rename(columns={"Close": "Actions US"}),
+        df_xgdu.rename(columns={"Close": "Or physique"}),
+        df_zpr1.rename(columns={"Close": "Oblig. US CT"})
     ], axis=1)
 
     # Filtrage des données valides (communes et non nulles)
@@ -42,7 +42,7 @@ def run():
 
     # 🔹 Slider : Date base 100
     selected_label_base = st.select_slider(
-        "📅 Choisissez la date d’origine (base 100) :",
+        "📅 Choisissez la date d’origine base 100 pour comparaison :",
         options=date_labels,
         value=date_labels[0]
     )

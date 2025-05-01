@@ -12,7 +12,7 @@ from st_compare import run as run_compare
 
 
 # Titre du dashboard
-st.title("📊 Bienvenue sur le dashboard des ETF")
+st.title("📊 Suivi de performance des ETF")
 
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
