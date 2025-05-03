@@ -1,21 +1,29 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import yfinance as yf
+from google.cloud import bigquery
 
 def run():
-    # --- Connexion à la base ---
-    db_path = "./data/etf_data.db"
+    # --- Connexion à BigQuery ---
+    project_id = "etf-monitoring"  # Remplace par ton projet Google Cloud
+    dataset_id = "etf_data"
     table_name = "dtla_l"
-    engine = create_engine(f"sqlite:///{db_path}")
+    full_table_id = f"{project_id}.{dataset_id}.{table_name}"
+
+    client = bigquery.Client(project=project_id)
 
     # --- Définir le ticker comme le nom de la table ---
     ticker = table_name.upper().replace("_", ".")
 
-    # --- Lecture des données ---
-    df = pd.read_sql_table(table_name, con=engine)
+     # --- Lecture des données depuis BigQuery ---
+    query = f"""
+        SELECT *
+        FROM `{full_table_id}`
+    """
+    df = pd.read_gbq(query, project_id=project_id)
+
     df['Date'] = pd.to_datetime(df['Date'])
     df.set_index('Date', inplace=True)
     df.sort_index(inplace=True)

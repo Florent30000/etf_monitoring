@@ -1,0 +1,21 @@
+
+#Nom du projet
+#etf-monitoring
+#ID du projet
+#etf-monitoring
+#Numéro du projet :
+#614907392388
+
+#export GOOGLE_APPLICATION_CREDENTIALS="FINANCIAL_MARKET_MONITORING/.secrets/etf-monitoring-73f0b22f3138.json"
+
+#GCP dataset_id
+#etf-monitoring.etf_data
+
+
+#Compte de service
+#Nom de compte de service
+#etf-monitoring-service
+#Nom à afficher pour ce compte de service
+#ID du compte de service
+#etf-monitoring-service
+#Adresse e-mail : etf-monitoring-service@etf-monitoring.iam.gserviceaccount.com
