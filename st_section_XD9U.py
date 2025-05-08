@@ -13,6 +13,7 @@ def run():
     # --- Définir le ticker comme le nom de la table ---
     ticker = table_name.upper().replace("_", ".")
 
+
     # --- Lecture des données ---
     df = pd.read_sql_table(table_name, con=engine)
     df['Date'] = pd.to_datetime(df['Date'])

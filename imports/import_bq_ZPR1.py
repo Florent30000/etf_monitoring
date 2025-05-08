@@ -13,8 +13,8 @@ if not api_key:
     raise ValueError("Clé API EOD manquante")
 
 # --- Paramètres de l'ETF ---
-ticker = "DTLA.LSE"  # format EOD
-table_name = "dtla_l"
+ticker = "ZPR1.XETRA"  # format EOD
+table_name = ticker.lower().replace(".", "_")
 bq_project = "etf-monitoring"
 bq_dataset = "etf_data"
 bq_table = f"{bq_project}.{bq_dataset}.{table_name}"

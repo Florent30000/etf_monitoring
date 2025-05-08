@@ -23,7 +23,6 @@ def run():
         FROM `{full_table_id}`
     """
     df = pd.read_gbq(query, project_id=project_id)
-
     df['Date'] = pd.to_datetime(df['Date'])
     df.set_index('Date', inplace=True)
     df.sort_index(inplace=True)
