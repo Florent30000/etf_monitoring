@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
-from google.cloud import bigquery
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+from bq_utils import get_bigquery_client
+
+client = get_bigquery_client()
 
 def run():
     # --- Connexion BigQuery ---
@@ -10,8 +12,6 @@ def run():
     dataset_id = "etf_data"
     table_name = "xgdu_xetra"
     full_table_id = f"{project_id}.{dataset_id}.{table_name}"
-
-    client = bigquery.Client(project=project_id)
 
     # --- Définir le ticker comme le nom de la table ---
     ticker = table_name.upper().replace("_", ".")

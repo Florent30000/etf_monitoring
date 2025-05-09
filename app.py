@@ -1,4 +1,7 @@
 import streamlit as st
+from bq_utils import get_bigquery_client
+
+client = get_bigquery_client()
 
 # Configuration de la page (dans app.py)
 st.set_page_config(page_title="Dashboard ETF", layout="wide")
@@ -10,7 +13,6 @@ from st_section_XGDU import run as run_XGDU
 from st_section_ZPR1 import run as run_ZPR1
 from st_compare import run as run_compare
 from st_section_usd_eur import run as run_usd_eur
-
 
 # Titre du dashboard
 st.title("📊 Suivi de performance des ETF")

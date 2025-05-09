@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from google.cloud import bigquery
+from bq_utils import get_bigquery_client
+
+client = get_bigquery_client()
 
 def run():
     st.subheader("📈 Suivi de l'ETF Obligations US LT (en EUR)")
@@ -14,8 +16,6 @@ def run():
     fx_table = "eur_usd_parity"
     full_etf_table = f"{project_id}.{dataset_id}.{etf_table}"
     full_fx_table = f"{project_id}.{dataset_id}.{fx_table}"
-
-    client = bigquery.Client(project=project_id)
 
     # --- Récupérer les données de l’ETF et du taux de change ---
     query = f"""
