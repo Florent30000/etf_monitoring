@@ -1,19 +1,20 @@
 import streamlit as st
 import pandas as pd
-from google.cloud import bigquery
 import matplotlib.pyplot as plt
 import numpy as np
+from bq_utils import get_bigquery_client
 
 def run():
     # Titre
     st.subheader("📈 Portefeuille Harry Brown : croisement des ETF")
+
+    client = get_bigquery_client()
 
     # Chargement des données
     @st.cache_data
     def charger_donnees():
         project_id = "etf-monitoring"
         dataset_id = "etf_data"
-        client = bigquery.Client(project=project_id)
 
         # Charger DTLA
         query_dtla = f"SELECT Date, Close FROM `{project_id}.{dataset_id}.dtla_l`"

@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from bq_utils import get_bigquery_client
 
-client = get_bigquery_client()
-
 def run():
     # --- Connexion BigQuery ---
     project_id = "etf-monitoring"
     dataset_id = "etf_data"
     table_name = "eur_usd_parity"
     full_table_id = f"{project_id}.{dataset_id}.{table_name}"
+
+    client = get_bigquery_client()
 
     # --- Lecture des données depuis BigQuery ---
     query = f"SELECT Date, Close FROM `{full_table_id}`"

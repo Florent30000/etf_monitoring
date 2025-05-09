@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from bq_utils import get_bigquery_client
 
-client = get_bigquery_client()
-
 def run():
     st.subheader("📈 Suivi de l'ETF Obligations US LT (en EUR)")
+
+    client = get_bigquery_client()
 
     # --- Connexion à BigQuery ---
     project_id = "etf-monitoring"
