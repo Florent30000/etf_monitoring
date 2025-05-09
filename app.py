@@ -1,10 +1,10 @@
 import streamlit as st
 from bq_utils import get_bigquery_client
 
-client = get_bigquery_client()
-
 # Configuration de la page (dans app.py)
 st.set_page_config(page_title="Dashboard ETF", layout="wide")
+
+client = get_bigquery_client()
 
 # Pages importées
 from st_section_DTLA import run as run_DTLA
