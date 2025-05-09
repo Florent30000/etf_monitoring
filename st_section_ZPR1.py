@@ -1,23 +1,47 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
+from google.cloud import bigquery
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 def run():
-    # --- Connexion à la base ---
-    db_path = "./data/etf_data.db"
-    table_name = "zpr1_de"
-    engine = create_engine(f"sqlite:///{db_path}")
+    # --- Connexion BigQuery ---
+    project_id = "etf-monitoring"
+    dataset_id = "etf_data"
+    table_name = "zpr1_xetra"
+    full_table_id = f"{project_id}.{dataset_id}.{table_name}"
+
+    client = bigquery.Client(project=project_id)
 
     # --- Définir le ticker comme le nom de la table ---
     ticker = table_name.upper().replace("_", ".")
 
-    # --- Lecture des données ---
-    df = pd.read_sql_table(table_name, con=engine)
-    df['Date'] = pd.to_datetime(df['Date'])
-    df.set_index('Date', inplace=True)
+    # --- Lecture des données depuis BigQuery ---
+    query = f"SELECT Date, Close FROM `{full_table_id}`"
+    df = client.query(query).to_dataframe()
+    df["Date"] = pd.to_datetime(df["Date"])
+    df.set_index("Date", inplace=True)
     df.sort_index(inplace=True)
+
+    # --- Affichage Streamlit ---
+    st.subheader("📈 Suivi de l'ETF Obligations US CT")
+
+    # Définir la plage de dates disponibles
+    min_date = df.index.min().date()
+    max_date = df.index.max().date()
+
+    # Ajouter une slider pour choisir la date de début d'affichage
+    start_date = st.slider(
+    "📅 Choisissez la date de début d'affichage",
+    min_value=min_date,
+    max_value=max_date,
+    value=min_date,
+    format="YYYY-MM-DD"
+    )
+
+    # Filtrer les données pour le graphique
+    start_date = pd.to_datetime(start_date)
+    df_filtered = df[df.index >= start_date]
 
     # --- Calcul des variations ---
     latest_date = df.index.max()
@@ -42,31 +66,28 @@ def run():
             variation_pct = ((close_latest - past_close) / past_close) * 100
             variation_table.append((label, variation_pct))
 
-    variation_df = pd.DataFrame(variation_table, columns=["Période", ticker])
+    variation_df = pd.DataFrame(variation_table, columns=["Période", "Var"])
 
     # --- Formater avec flèches et couleurs HTML ---
     def format_variation_html(pct):
         color = "green" if pct > 0 else "red"
         return f'<span style="color:{color}; font-weight:bold"> {pct:+.2f}%</span>'
 
-    variation_df[ticker] = variation_df[ticker].apply(format_variation_html)
+    variation_df["Var"] = variation_df["Var"].apply(format_variation_html)
 
-    # --- Affichage Streamlit ---
-    st.title("📈 Suivi de l'ETF Obligations US CT")
+    # Transposer en supprimant toute trace de l'index/colonne "Période"
+    variation_df = variation_df.set_index("Période").T
+    variation_df.index = ["Variation (%)"]  # Renomme l’unique ligne
+    variation_df.columns.name = None  # Supprime "Période" comme nom de colonne
 
-    # Diviser l'espace en deux colonnes
-    col1, col2 = st.columns([2, 1])  # La première colonne sera plus large (2/3), la deuxième plus étroite (1/3)
+    # Affichage du graphique
+    fig, ax = plt.subplots()
+    df_filtered["Close"].plot(ax=ax, title=f"Cours de clôture de l'ETF {ticker} depuis {start_date.date()}")
+    st.pyplot(fig)
 
-    # Courbe dans la première colonne
-    with col1:
-        fig, ax = plt.subplots()
-        df["Close"].plot(ax=ax, title=f"Cours de clôture de l'ETF {ticker}")
-        st.pyplot(fig)
-
-    # Tableau de variation dans la deuxième colonne
-    with col2:
-        st.subheader("Variation du cours")
-        st.write(
-            variation_df.to_html(escape=False, index=False),
-            unsafe_allow_html=True
-        )
+    # Affichage du Tableau de variation
+    st.subheader("Variation du cours")
+    st.write(
+        variation_df.to_html(escape=False, index=False),
+        unsafe_allow_html=True
+    )

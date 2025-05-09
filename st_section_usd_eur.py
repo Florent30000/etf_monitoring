@@ -8,13 +8,10 @@ def run():
     # --- Connexion BigQuery ---
     project_id = "etf-monitoring"
     dataset_id = "etf_data"
-    table_name = "xd9u_xetra"
+    table_name = "eur_usd_parity"
     full_table_id = f"{project_id}.{dataset_id}.{table_name}"
 
     client = bigquery.Client(project=project_id)
-
-    # --- Définir le ticker comme le nom de la table ---
-    ticker = table_name.upper().replace("_", ".")
 
     # --- Lecture des données depuis BigQuery ---
     query = f"SELECT Date, Close FROM `{full_table_id}`"
@@ -23,23 +20,26 @@ def run():
     df.set_index("Date", inplace=True)
     df.sort_index(inplace=True)
 
+    # --- Inverser EUR/USD -> USD/EUR ---
+    df["Close"] = 1 / df["Close"]
+
     # --- Affichage Streamlit ---
-    st.subheader("📈 Suivi de l'ETF Actions US")
+    st.subheader("💱 Suivi de la parité USD/EUR")
 
     # Définir la plage de dates disponibles
     min_date = df.index.min().date()
     max_date = df.index.max().date()
 
-    # Ajouter une slider pour choisir la date de début d'affichage
+    # Slider de date de début
     start_date = st.slider(
-    "📅 Choisissez la date de début d'affichage",
-    min_value=min_date,
-    max_value=max_date,
-    value=min_date,
-    format="YYYY-MM-DD"
+        "📅 Choisissez la date de début d'affichage",
+        min_value=min_date,
+        max_value=max_date,
+        value=min_date,
+        format="YYYY-MM-DD"
     )
 
-    # Filtrer les données pour le graphique
+    # Filtrer les données
     start_date = pd.to_datetime(start_date)
     df_filtered = df[df.index >= start_date]
 
@@ -54,7 +54,7 @@ def run():
         "3 mois": latest_date - pd.DateOffset(months=3),
         "6 mois": latest_date - pd.DateOffset(months=6),
         "1 an": latest_date - pd.DateOffset(years=1),
-        "3 an": latest_date - pd.DateOffset(years=3)
+        "3 ans": latest_date - pd.DateOffset(years=3),
     }
 
     variation_table = []
@@ -68,26 +68,22 @@ def run():
 
     variation_df = pd.DataFrame(variation_table, columns=["Période", "Var"])
 
-    # --- Formater avec flèches et couleurs HTML ---
+    # --- Format HTML (flèches couleurs) ---
     def format_variation_html(pct):
         color = "green" if pct > 0 else "red"
         return f'<span style="color:{color}; font-weight:bold"> {pct:+.2f}%</span>'
 
     variation_df["Var"] = variation_df["Var"].apply(format_variation_html)
-
-    # Transposer en supprimant toute trace de l'index/colonne "Période"
     variation_df = variation_df.set_index("Période").T
-    variation_df.index = ["Variation (%)"]  # Renomme l’unique ligne
-    variation_df.columns.name = None  # Supprime "Période" comme nom de colonne
+    variation_df.index = ["Variation (%)"]
+    variation_df.columns.name = None
 
-    # Affichage du graphique
+    # --- Affichage graphique ---
     fig, ax = plt.subplots()
-    df_filtered["Close"].plot(ax=ax, title=f"Cours de clôture de l'ETF {ticker} depuis {start_date.date()}")
+    df_filtered["Close"].plot(ax=ax, title=f"Parité USD/EUR depuis le {start_date.date()}")
+    ax.set_ylabel("Taux de change")
     st.pyplot(fig)
 
-    # Affichage de Tableau de variation
-    st.subheader("Variation du cours")
-    st.write(
-        variation_df.to_html(escape=False, index=False),
-        unsafe_allow_html=True
-    )
+    # --- Tableau de variation ---
+    st.subheader("Variation du taux de change")
+    st.write(variation_df.to_html(escape=False, index=False), unsafe_allow_html=True)

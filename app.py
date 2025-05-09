@@ -9,15 +9,16 @@ from st_section_XD9U import run as run_XD9U
 from st_section_XGDU import run as run_XGDU
 from st_section_ZPR1 import run as run_ZPR1
 from st_compare import run as run_compare
+from st_section_usd_eur import run as run_usd_eur
 
 
 # Titre du dashboard
-st.title("📊 Bienvenue sur le dashboard des ETF")
+st.title("📊 Suivi de performance des ETF")
 
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
-    ["Portefeuille Harry Browne","Obligations US LT", "Actions US", "Or physique", "Obligations CT"]
+    ["Portefeuille Harry Browne","Obligations US LT", "Actions US", "Or physique", "Obligations US CT", "Parité USD-EUR"]
 )
 
 # Lancer la fonction appropriée en fonction de la sélection
@@ -29,5 +30,7 @@ elif page == "Actions US":
     run_XD9U()
 elif page == "Or physique":
     run_XGDU()
-elif page == "Obligations CT":
+elif page == "Obligations US CT":
     run_ZPR1()
+elif page == "Parité USD-EUR":
+    run_usd_eur()
