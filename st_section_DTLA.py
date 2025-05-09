@@ -29,7 +29,8 @@ def run():
         ON etf.Date = fx.Date
         ORDER BY etf.Date
     """
-    df = pd.read_gbq(query, project_id=project_id)
+    # df = pd.read_gbq(query, project_id=project_id)
+    df = client.query(query).to_dataframe()
     df['Date'] = pd.to_datetime(df['Date'])
     df.set_index('Date', inplace=True)
     df.sort_index(inplace=True)
