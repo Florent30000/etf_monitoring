@@ -1,23 +1,30 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
+from google.cloud import bigquery
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 def run():
-    # --- Connexion à la base ---
-    db_path = "./data/etf_data.db"
-    table_name = "xgdu_mi"
-    engine = create_engine(f"sqlite:///{db_path}")
+    # --- Connexion BigQuery ---
+    project_id = "etf-monitoring"
+    dataset_id = "etf_data"
+    table_name = "xgdu_xetra"
+    full_table_id = f"{project_id}.{dataset_id}.{table_name}"
+
+    client = bigquery.Client(project=project_id)
 
     # --- Définir le ticker comme le nom de la table ---
     ticker = table_name.upper().replace("_", ".")
 
-    # --- Lecture des données ---
-    df = pd.read_sql_table(table_name, con=engine)
-    df['Date'] = pd.to_datetime(df['Date'])
-    df.set_index('Date', inplace=True)
+    # --- Lecture des données depuis BigQuery ---
+    query = f"SELECT Date, Close FROM `{full_table_id}`"
+    df = client.query(query).to_dataframe()
+    df["Date"] = pd.to_datetime(df["Date"])
+    df.set_index("Date", inplace=True)
     df.sort_index(inplace=True)
+
+    # --- Affichage Streamlit ---
+    st.subheader("📈 Suivi de l'ETF Or physique")
 
     # Définir la plage de dates disponibles
     min_date = df.index.min().date()
@@ -72,9 +79,6 @@ def run():
     variation_df = variation_df.set_index("Période").T
     variation_df.index = ["Variation (%)"]  # Renomme l’unique ligne
     variation_df.columns.name = None  # Supprime "Période" comme nom de colonne
-
-    # --- Affichage Streamlit ---
-    st.subheader("📈 Suivi de l'ETF Or physique")
 
     # Affichage du graphique
     fig, ax = plt.subplots()

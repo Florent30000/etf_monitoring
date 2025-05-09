@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+from google.cloud import bigquery
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -8,17 +8,40 @@ def run():
     # Titre
     st.subheader("📈 Portefeuille Harry Brown : croisement des ETF")
 
-    # Connexion à la base
-    db_path = "data/etf_data.db"
-    conn = sqlite3.connect(db_path)
-
     # Chargement des données
     @st.cache_data
     def charger_donnees():
-        df_dtla = pd.read_sql("SELECT Date, Close FROM dtla_l", conn, parse_dates=["Date"]).set_index("Date")
-        df_xd9u = pd.read_sql("SELECT Date, Close FROM xd9u_mi", conn, parse_dates=["Date"]).set_index("Date")
-        df_xgdu = pd.read_sql("SELECT Date, Close FROM xgdu_mi", conn, parse_dates=["Date"]).set_index("Date")
-        df_zpr1 = pd.read_sql("SELECT Date, Close FROM zpr1_de", conn, parse_dates=["Date"]).set_index("Date")
+        project_id = "etf-monitoring"
+        dataset_id = "etf_data"
+        client = bigquery.Client(project=project_id)
+
+        # Charger DTLA
+        query_dtla = f"SELECT Date, Close FROM `{project_id}.{dataset_id}.dtla_l`"
+        df_dtla = client.query(query_dtla).to_dataframe()
+        df_dtla["Date"] = pd.to_datetime(df_dtla["Date"])
+
+        # Charger taux de change USD -> EUR
+        query_fx = f"SELECT Date, Close FROM `{project_id}.{dataset_id}.eur_usd_parity`"
+        df_fx = client.query(query_fx).to_dataframe()
+        df_fx.rename(columns={"Close": "FX"}, inplace=True)
+        df_fx["Date"] = pd.to_datetime(df_fx["Date"])
+
+        # Conversion en EUR via jointure
+        df_dtla = pd.merge(df_dtla, df_fx, on="Date", how="inner")
+        df_dtla["Close"] = df_dtla["Close"] / df_dtla["FX"]
+        df_dtla = df_dtla[["Date", "Close"]].set_index("Date")
+
+        # Charger les autres ETF
+        def charger_etf(nom_table):
+            query = f"SELECT Date, Close FROM `{project_id}.{dataset_id}.{nom_table}`"
+            df = client.query(query).to_dataframe()
+            df["Date"] = pd.to_datetime(df["Date"])
+            return df.set_index("Date")
+
+        df_xd9u = charger_etf("xd9u_xetra")
+        df_xgdu = charger_etf("xgdu_xetra")
+        df_zpr1 = charger_etf("zpr1_xetra")
+
         return df_dtla, df_xd9u, df_xgdu, df_zpr1
 
     df_dtla, df_xd9u, df_xgdu, df_zpr1 = charger_donnees()
