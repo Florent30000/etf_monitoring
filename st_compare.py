@@ -72,30 +72,18 @@ def run():
     )
     date_base = date_mapping[selected_label_base]
 
-    # 🔄 Nouvel affichage : slider de début d'affichage
-    all_dates = df_all.index
-    date_labels_all = [d.strftime("%Y-%m-%d") for d in all_dates]
-    date_mapping_all = dict(zip(date_labels_all, all_dates))
-
-    selected_start_label = st.select_slider(
-        "📆 Choisissez la date de début d’affichage du graphique :",
-        options=date_labels_all,
-        value=date_labels_all[0]
-    )
-    date_start = date_mapping_all[selected_start_label]
-
     # Rebase à 100
     df_base100 = df_all / df_all.loc[date_base] * 100
     df_base100["Moyenne"] = df_base100.mean(axis=1)
 
-    # Filtrage à partir de la date d'affichage
-    df_base100 = df_base100[df_base100.index >= date_start]
+    # Utiliser la date de base 100 comme date de début
+    df_base100 = df_base100[df_base100.index >= date_base]
 
     # Sélectionner plusieurs ETFs (au moins 2, au maximum tous)
     etf_selection = st.multiselect(
         "🔍 Sélectionnez les ETFs à afficher :",
         options=[col for col in df_base100.columns if col != "Moyenne"],
-        default=df_base100.columns[:2].tolist()
+        default=df_base100.columns[:4].tolist()
     )
 
     # Vérifier qu'il y a au moins 2 ETFs sélectionnés
