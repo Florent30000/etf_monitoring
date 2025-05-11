@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from bq_utils import get_bigquery_client
+from bq_utils_streamlit import get_bigquery_client
 
 def run():
     # Titre
