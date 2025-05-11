@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-from bq_utils import get_bigquery_client
+from bq_utils_streamlit import get_bigquery_client
 
 def run():
     # --- Connexion BigQuery ---
     project_id = "etf-monitoring"
     dataset_id = "etf_data"
-    table_name = "xgdu_xetra"
+    table_name = "xd9u_xetra"
     full_table_id = f"{project_id}.{dataset_id}.{table_name}"
 
     client = get_bigquery_client()
@@ -24,7 +24,7 @@ def run():
     df.sort_index(inplace=True)
 
     # --- Affichage Streamlit ---
-    st.subheader("📈 Suivi de l'ETF Or physique")
+    st.subheader("📈 Suivi de l'ETF Actions US")
 
     # Définir la plage de dates disponibles
     min_date = df.index.min().date()
@@ -85,7 +85,7 @@ def run():
     df_filtered["Close"].plot(ax=ax, title=f"Cours de clôture de l'ETF {ticker} depuis {start_date.date()}")
     st.pyplot(fig)
 
-    # Affichage du Tableau de variation
+    # Affichage de Tableau de variation
     st.subheader("Variation du cours")
     st.write(
         variation_df.to_html(escape=False, index=False),

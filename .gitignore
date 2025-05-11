@@ -20,3 +20,6 @@ note
 
 # authentification big query copié en local (existe de manière autonome dans streamlit cloud)
 .streamlit/secrets.toml
+
+# EOD_API_KEY
+imports/.env

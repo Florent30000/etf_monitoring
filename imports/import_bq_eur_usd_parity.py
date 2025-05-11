@@ -3,8 +3,9 @@ import pandas as pd
 import requests
 from datetime import datetime
 from io import StringIO
-from google.cloud import bigquery
 from dotenv import load_dotenv
+from google.cloud import bigquery
+from bq_utils_import import get_bigquery_client
 
 # --- Charger les variables d’environnement ---
 load_dotenv()
@@ -21,7 +22,7 @@ bq_table = f"{bq_project}.{bq_dataset}.{table_name}"
 default_start_date = pd.to_datetime("2000-01-01")
 
 # --- Initialiser le client BigQuery ---
-client = bigquery.Client()
+client = get_bigquery_client()
 
 # --- Vérifier la dernière date en base ---
 query = f"""
