@@ -25,7 +25,7 @@ jobs:
       - name: Installer les dépendances
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-prod.txt
           pip install python-dotenv
 
       - name: Lancer le script d'import pour DTLA
