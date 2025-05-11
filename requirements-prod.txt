@@ -5,4 +5,3 @@ python-dotenv==1.1.0
 google-cloud-bigquery==3.31.0
 google-auth==2.39.0
 google-auth-oauthlib==1.2.2
-google-oauth2-service-account==2.1.0
