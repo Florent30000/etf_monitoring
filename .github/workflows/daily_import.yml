@@ -2,7 +2,7 @@ name: Importer les données ETF chaque jour ouvré
 
 on:
   schedule:
-    - cron: '0 16 * * 1-5'  # Du lundi au vendredi à 16h UTC (18h heure française en été)
+    - cron: '0 5 * * 2-6'  # Du mardi au samedi à 5h UTC (7h heure française en été)
   workflow_dispatch:        # Permet de le lancer manuellement aussi
 
 jobs:
