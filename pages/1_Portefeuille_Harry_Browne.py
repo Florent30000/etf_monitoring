@@ -11,7 +11,7 @@ from sections.st_section_DTLA import run as run_DTLA
 from sections.st_section_XD9U import run as run_XD9U
 from sections.st_section_XGDU import run as run_XGDU
 from sections.st_section_ZPR1 import run as run_ZPR1
-from sections.st_compare import run as run_compare
+from sections.st_Harry_Browne import run as run_compare
 from sections.st_section_usd_eur import run as run_usd_eur
 
 # Titre du dashboard

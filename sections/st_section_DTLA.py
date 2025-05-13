@@ -56,12 +56,13 @@ def run():
 
     variations = {
         "1 jour": latest_date - timedelta(days=1),
-        "1 semaine": latest_date - timedelta(weeks=1),
+        "1 sem.": latest_date - timedelta(weeks=1),
         "1 mois": latest_date - pd.DateOffset(months=1),
         "3 mois": latest_date - pd.DateOffset(months=3),
         "6 mois": latest_date - pd.DateOffset(months=6),
         "1 an": latest_date - pd.DateOffset(years=1),
         "3 ans": latest_date - pd.DateOffset(years=3),
+        "5 ans": latest_date - pd.DateOffset(years=5)
     }
 
     variation_table = []
@@ -90,5 +91,13 @@ def run():
     st.pyplot(fig)
 
     st.subheader("Variation du cours (en EUR)")
-    st.write(variation_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+
+    # Découper le tableau en 2 moitiés
+    first_half = variation_df.iloc[:, :4]
+    second_half = variation_df.iloc[:, 4:]
+
+    # Affichage vertical
+    st.write(first_half.to_html(escape=False, index=False), unsafe_allow_html=True)
+    st.write(second_half.to_html(escape=False, index=False), unsafe_allow_html=True)
+
 
