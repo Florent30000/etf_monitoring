@@ -13,9 +13,6 @@ from sections.st_section_XGDU import run as run_XGDU
 from sections.st_section_ZPR1 import run as run_ZPR1
 from sections.st_Harry_Browne import run as run_compare
 
-# Titre du dashboard
-st.title("📊 Suivi de performance des ETF")
-
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
