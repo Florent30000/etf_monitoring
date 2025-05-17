@@ -74,7 +74,7 @@ def run():
 
     # Rebase à 100
     df_base100 = df_all / df_all.loc[date_base] * 100
-    df_base100["Moyenne"] = df_base100.mean(axis=1)
+    df_base100["Valorisation HB"] = df_base100.mean(axis=1)
 
     # Utiliser la date de base 100 comme date de début
     df_base100 = df_base100[df_base100.index >= date_base]
@@ -82,7 +82,7 @@ def run():
     # Sélectionner plusieurs ETFs (au moins 2, au maximum tous)
     etf_selection = st.multiselect(
         "🔍 Sélectionnez les ETFs à afficher :",
-        options=[col for col in df_base100.columns if col != "Moyenne"],
+        options=[col for col in df_base100.columns if col != "Valorisation HB"],
         default=df_base100.columns[:4].tolist()
     )
 
@@ -94,12 +94,12 @@ def run():
         df_selected = df_base100[etf_selection]
         
         # Calculer la moyenne des ETFs sélectionnés
-        df_selected["Moyenne"] = df_selected.mean(axis=1)
+        df_selected["Valorisation HB"] = df_selected.mean(axis=1)
 
         # Affichage du graphique avec les ETFs sélectionnés et la moyenne
         fig, ax = plt.subplots(figsize=(12, 6))
         for col in df_base100.columns:
-            if col == "Moyenne":
+            if col == "Valorisation HB":
                 ax.plot(df_base100.index, df_base100[col], label=col, color="black", linewidth=2, linestyle="--")
             elif col in etf_selection:
                 ax.plot(df_base100.index, df_base100[col], label=col)
