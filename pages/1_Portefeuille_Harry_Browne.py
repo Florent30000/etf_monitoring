@@ -7,12 +7,11 @@ st.set_page_config(page_title="Dashboard ETF", layout="wide")
 client = get_bigquery_client()
 
 # Pages importées
-from st_section_DTLA import run as run_DTLA
-from st_section_XD9U import run as run_XD9U
-from st_section_XGDU import run as run_XGDU
-from st_section_ZPR1 import run as run_ZPR1
-from st_compare import run as run_compare
-from st_section_usd_eur import run as run_usd_eur
+from sections.st_section_DTLA import run as run_DTLA
+from sections.st_section_XD9U import run as run_XD9U
+from sections.st_section_XGDU import run as run_XGDU
+from sections.st_section_ZPR1 import run as run_ZPR1
+from sections.st_Harry_Browne import run as run_compare
 
 # Titre du dashboard
 st.title("📊 Suivi de performance des ETF")
@@ -20,7 +19,7 @@ st.title("📊 Suivi de performance des ETF")
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
-    ["Portefeuille Harry Browne","Obligations US LT", "Actions US", "Or physique", "Obligations US CT", "Parité USD-EUR"]
+    ["Portefeuille Harry Browne","Obligations US LT", "Actions US", "Or physique", "Obligations US CT"]
 )
 
 # Lancer la fonction appropriée en fonction de la sélection
@@ -34,5 +33,3 @@ elif page == "Or physique":
     run_XGDU()
 elif page == "Obligations US CT":
     run_ZPR1()
-elif page == "Parité USD-EUR":
-    run_usd_eur()

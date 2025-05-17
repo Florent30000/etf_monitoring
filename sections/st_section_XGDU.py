@@ -8,7 +8,7 @@ def run():
     # --- Connexion BigQuery ---
     project_id = "etf-monitoring"
     dataset_id = "etf_data"
-    table_name = "zpr1_xetra"
+    table_name = "xgdu_xetra"
     full_table_id = f"{project_id}.{dataset_id}.{table_name}"
 
     client = get_bigquery_client()
@@ -24,7 +24,7 @@ def run():
     df.sort_index(inplace=True)
 
     # --- Affichage Streamlit ---
-    st.subheader("📈 Suivi de l'ETF Obligations US CT")
+    st.subheader("📈 Suivi de l'ETF Or physique")
 
     # Définir la plage de dates disponibles
     min_date = df.index.min().date()
@@ -49,12 +49,13 @@ def run():
 
     variations = {
         "1 jour": latest_date - timedelta(days=1),
-        "1 semaine": latest_date - timedelta(weeks=1),
+        "1 sem.": latest_date - timedelta(weeks=1),
         "1 mois": latest_date - pd.DateOffset(months=1),
         "3 mois": latest_date - pd.DateOffset(months=3),
         "6 mois": latest_date - pd.DateOffset(months=6),
         "1 an": latest_date - pd.DateOffset(years=1),
-        "3 an": latest_date - pd.DateOffset(years=3)
+        "3 ans": latest_date - pd.DateOffset(years=3),
+        "5 ans": latest_date - pd.DateOffset(years=5)
     }
 
     variation_table = []
@@ -87,7 +88,11 @@ def run():
 
     # Affichage du Tableau de variation
     st.subheader("Variation du cours")
-    st.write(
-        variation_df.to_html(escape=False, index=False),
-        unsafe_allow_html=True
-    )
+
+    # Découper le tableau en 2 moitiés
+    first_half = variation_df.iloc[:, :4]
+    second_half = variation_df.iloc[:, 4:]
+
+    # Affichage vertical
+    st.write(first_half.to_html(escape=False, index=False), unsafe_allow_html=True)
+    st.write(second_half.to_html(escape=False, index=False), unsafe_allow_html=True)
