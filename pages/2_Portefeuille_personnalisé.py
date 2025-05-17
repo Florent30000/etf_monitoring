@@ -9,9 +9,6 @@ client = get_bigquery_client()
 # Pages importées
 from sections.st_Harry_Browne import run as run_compare
 
-# Titre du dashboard
-st.title("📊 Suivi de performance des ETF")
-
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
