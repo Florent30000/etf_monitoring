@@ -6,7 +6,7 @@ from bq_utils_streamlit import get_bigquery_client
 
 def run():
     # Titre
-    st.subheader("📈 Portefeuille Harry Brown : croisement des ETF")
+    st.subheader("📈 Portefeuille Harry Browne : croisement des ETF")
 
     client = get_bigquery_client()
 
