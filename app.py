@@ -14,6 +14,7 @@ Ce tableau de bord vous permet de suivre les performances d'une sélection d'ETF
         - Au top 3 des meilleurs ETF sur les catégories 3 mois, 6 mois, 1 an, 3 ans et 5 ans
          
     Informations techniques :
+        - Tous la sélection d'ETF sont à dividendes réinvestis
         - Les ETF sont mis à jour quotidiennement à 7h du matin sur le base des cours de clôture de la veille.
         - Les ETF sont soit directement en EURO, soit converti en DOLLAR au cours historique
 """)
