@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from bq_utils_streamlit import get_bigquery_client
 
@@ -24,7 +25,7 @@ def run():
     df.sort_index(inplace=True)
 
     # --- Affichage Streamlit ---
-    st.subheader("📈 Suivi de l'ETF Actions US")
+    st.subheader("📈 Suivi de l'ETF MSCI USA")
 
     # Définir la plage de dates disponibles
     min_date = df.index.min().date()
@@ -82,9 +83,18 @@ def run():
     variation_df.columns.name = None  # Supprime "Période" comme nom de colonne
 
     # Affichage du graphique
-    fig, ax = plt.subplots()
-    df_filtered["Close"].plot(ax=ax, title=f"Cours de clôture de l'ETF {ticker} depuis {start_date.date()}")
-    st.pyplot(fig)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df_filtered.index, y=df_filtered["Close"], mode='lines', name='Close'))
+
+    fig.update_layout(
+        title=f"Cours de clôture de l'ETF {ticker} depuis {start_date.date()}",
+        xaxis_title="Date",
+        yaxis_title="Prix (€)",
+        template="plotly_white",
+        hovermode="x unified"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     # Affichage de Tableau de variation
     st.subheader("Variation du cours")
