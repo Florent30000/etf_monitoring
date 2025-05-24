@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from bq_utils_streamlit import get_bigquery_client
 
 def run():
@@ -116,31 +116,36 @@ def run():
                     st.write(f"• {etf}")
             return
 
-        fig, ax = plt.subplots()
         couleurs = ["#C0C0C0", "#FFD700", "#CD7F32"]  # argent, or, bronze
-
         variation_series = variation_series.sort_values(ascending=False)
         valeurs = [variation_series.iloc[1], variation_series.iloc[0], variation_series.iloc[2]]
         noms = [variation_series.index[1], variation_series.index[0], variation_series.index[2]]
 
-        positions = [0, 1, 2]
-        bars = ax.bar(positions, valeurs, color=couleurs)
+        fig = go.Figure()
 
-        ax.set_title(titre)
-        ax.set_ylabel("Variation (%)")
-        ax.set_xticks(positions)
-        ax.set_xticklabels(noms)
+        for i, (val, nom, couleur) in enumerate(zip(valeurs, noms, couleurs)):
+            fig.add_trace(go.Bar(
+                x=[nom],
+                y=[val],
+                name=nom,
+                marker_color=couleur,
+                text=f"{val:.2f}%",
+                textposition="outside"
+            ))
 
-        ymax = max(valeurs) * 1.25
-        ymin = min(0, min(valeurs) * 1.25)
-        ax.set_ylim(ymin, ymax)
+        fig.update_layout(
+            title=titre,
+            yaxis_title="Variation (%)",
+            xaxis_title="ETF",
+            showlegend=False,
+            height=400,
+            template="plotly_white",
+            yaxis=dict(range=[min(0, min(valeurs)*1.25), max(valeurs)*1.25]),
+            dragmode=False,
+            margin=dict(t=60, b=60)
+        )
 
-        for i, bar in enumerate(bars):
-            height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2, height + 0.5,
-                    f"{height:.2f}%", ha='center', va='bottom')
-
-        st.pyplot(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
     # Calculs et affichages
     variation_3m = calc_variation(df_all[valid_etfs["3 mois"]], periods["3 mois"])

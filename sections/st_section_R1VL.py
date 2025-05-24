@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+import plotly.graph_objects as go
+from datetime import timedelta
 from bq_utils_streamlit import get_bigquery_client
 
 def run():
@@ -86,11 +86,19 @@ def run():
     variation_df.columns.name = None
 
     # --- Affichage Streamlit ---
-    fig, ax = plt.subplots()
-    df_filtered["Close_EUR"].plot(ax=ax, title=f"Cours de l'ETF R1VL en EUR depuis {start_date.date()}")
-    st.pyplot(fig)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df_filtered.index, y=df_filtered["Close_EUR"], mode='lines', name='Close_EUR'))
 
-    st.subheader("Variation du cours (en EUR)")
+    fig.update_layout(
+        title=f"Cours de clôture de l'ETF R1VL en EUR depuis {start_date.date()}",
+        xaxis_title="Date",
+        yaxis_title="Prix (€)",
+        template="plotly_white",
+        hovermode="x unified",
+        dragmode=False
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     # Découper le tableau en 2 moitiés
     first_half = variation_df.iloc[:, :4]
