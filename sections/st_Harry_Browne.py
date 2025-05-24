@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import numpy as np
 from bq_utils_streamlit import get_bigquery_client
 
@@ -50,7 +51,7 @@ def run():
     # Création d’un DataFrame combiné
     df_all = pd.concat([
         df_dtla.rename(columns={"Close": "Oblig. US LT"}),
-        df_xd9u.rename(columns={"Close": "Actions US"}),
+        df_xd9u.rename(columns={"Close": "MSCI USA"}),
         df_xgdu.rename(columns={"Close": "Or physique"}),
         df_zpr1.rename(columns={"Close": "Oblig. US CT"})
     ], axis=1)
@@ -97,21 +98,37 @@ def run():
         df_selected["Valorisation HB"] = df_selected.mean(axis=1)
 
         # Affichage du graphique avec les ETFs sélectionnés et la moyenne
-        fig, ax = plt.subplots(figsize=(12, 6))
+        fig = go.Figure()
+
+        # Tracer chaque colonne
         for col in df_base100.columns:
             if col == "Valorisation HB":
-                ax.plot(df_base100.index, df_base100[col], label=col, color="black", linewidth=2, linestyle="--")
+                fig.add_trace(go.Scatter(
+                    x=df_base100.index,
+                    y=df_base100[col],
+                    mode="lines",
+                    name=col,
+                    line=dict(color="black", width=2, dash="dash")
+                ))
             elif col in etf_selection:
-                ax.plot(df_base100.index, df_base100[col], label=col)
+                fig.add_trace(go.Scatter(
+                    x=df_base100.index,
+                    y=df_base100[col],
+                    mode="lines",
+                    name=col
+                ))
 
-            
-        ax.set_title(f"Comparaison des ETFs (Base 100 au {pd.to_datetime(date_base).date()})")
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Performance")
-        ax.legend()
-        ax.grid(True)
+        # Mise en forme du graphique
+        fig.update_layout(
+            title=f"Comparaison des ETFs (Base 100 au {pd.to_datetime(date_base).date()})",
+            xaxis_title="Date",
+            yaxis_title="Performance",
+            template="plotly_white",
+            legend=dict(title="ETF", orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+            height=600
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-        st.pyplot(fig)
 
     # Fonction pour colorer la police de texte en fonction de la variation
     def color_variation(val):
