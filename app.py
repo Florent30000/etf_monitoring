@@ -26,7 +26,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.write("""
-    - Au Podium (top 3) des meilleurs ETF par durée d'investissement (3 mois, 1 an et 3 ans).
+    - Au Podium (top 3) des meilleurs ETF par durée d'investissement (3 mois, 1 an et 3 ans)
 """)
 st.markdown(
     '<a href="/Podium" target="_self">👉 Podium</a>',
