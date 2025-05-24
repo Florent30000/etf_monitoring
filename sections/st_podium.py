@@ -108,13 +108,13 @@ def run():
 
     def afficher_podium(variation_series, titre):
         periode = titre.split("à")[-1].strip()
-        if len(variation_series) < 3:
-            st.warning(f"❗ Pas assez d'ETF avec historique suffisant pour afficher un podium : {titre}")
-            if excluded_etfs.get(periode):
-                st.info("⏳ Les ETF suivants n’ont pas suffisamment d’historique et sont exclus du podium :")
-                for etf in excluded_etfs[periode]:
-                    st.write(f"• {etf}")
-            return
+        #if len(variation_series) < 3:
+        #    st.warning(f"❗ Pas assez d'ETF avec historique suffisant pour afficher un podium : {titre}")
+        #    if excluded_etfs.get(periode):
+        #        st.info("⏳ Les ETF suivants n’ont pas suffisamment d’historique et sont exclus du podium :")
+        #        for etf in excluded_etfs[periode]:
+        #            st.write(f"• {etf}")
+        #    return
 
         couleurs = ["#C0C0C0", "#FFD700", "#CD7F32"]  # argent, or, bronze
         variation_series = variation_series.sort_values(ascending=False)
@@ -156,9 +156,9 @@ def run():
     top3_1y = variation_1y.sort_values(ascending=False).head(3)
     afficher_podium(top3_1y, "Top 3 ETF à 1 an")
 
-    variation_3y = calc_variation(df_all[valid_etfs["3 ans"]], periods["3 ans"])
-    top3_3y = variation_3y.sort_values(ascending=False).head(3)
-    afficher_podium(top3_3y, "Top 3 ETF à 3 ans")
+    #variation_3y = calc_variation(df_all[valid_etfs["3 ans"]], periods["3 ans"])
+    #top3_3y = variation_3y.sort_values(ascending=False).head(3)
+    #afficher_podium(top3_3y, "Top 3 ETF à 3 ans")
 
 
 
