@@ -94,7 +94,7 @@ def run():
         hovermode="x unified"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
 
     # Affichage de Tableau de variation
     st.subheader("Variation du cours")

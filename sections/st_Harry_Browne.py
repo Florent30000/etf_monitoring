@@ -122,12 +122,12 @@ def run():
         fig.update_layout(
             title=f"Comparaison des ETFs (Base 100 au {pd.to_datetime(date_base).date()})",
             xaxis_title="Date",
-            yaxis_title="Performance",
+            yaxis_title="Prix (€)",
             template="plotly_white",
             legend=dict(title="ETF", orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
             height=600
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
 
 
     # Fonction pour colorer la police de texte en fonction de la variation
