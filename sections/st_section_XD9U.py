@@ -91,10 +91,11 @@ def run():
         xaxis_title="Date",
         yaxis_title="Prix (€)",
         template="plotly_white",
-        hovermode="x unified"
+        hovermode="x unified",
+        dragmode=False
     )
 
-    st.plotly_chart(fig, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
+    st.plotly_chart(fig, use_container_width=True)
 
     # Affichage de Tableau de variation
     st.subheader("Variation du cours")

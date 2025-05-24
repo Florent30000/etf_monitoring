@@ -125,9 +125,10 @@ def run():
             yaxis_title="Prix (€)",
             template="plotly_white",
             legend=dict(title="ETF", orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-            height=600
+            height=600,
+            dragmode=False
         )
-        st.plotly_chart(fig, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
+        st.plotly_chart(fig, use_container_width=True)
 
 
     # Fonction pour colorer la police de texte en fonction de la variation
