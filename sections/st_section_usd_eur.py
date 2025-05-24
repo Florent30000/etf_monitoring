@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+import plotly.graph_objects as go
+from datetime import timedelta
 from bq_utils_streamlit import get_bigquery_client
 
 def run():
@@ -80,10 +80,19 @@ def run():
     variation_df.columns.name = None
 
     # --- Affichage graphique ---
-    fig, ax = plt.subplots()
-    df_filtered["Close"].plot(ax=ax, title=f"Parité USD/EUR depuis le {start_date.date()}")
-    ax.set_ylabel("Taux de change")
-    st.pyplot(fig)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df_filtered.index, y=df_filtered["Close"], mode='lines', name='Close'))
+
+    fig.update_layout(
+        title=f"Parité USD/EUR depuis le {start_date.date()}",
+        xaxis_title="Date",
+        yaxis_title="Taux de change",
+        template="plotly_white",
+        hovermode="x unified",
+        dragmode=False
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     # --- Tableau de variation ---
     st.subheader("Variation du taux de change")

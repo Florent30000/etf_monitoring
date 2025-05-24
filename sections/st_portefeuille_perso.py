@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 from bq_utils_streamlit import get_bigquery_client
 
 def run():
@@ -114,18 +113,47 @@ def run():
     df_selected["Mix valorisé"] = df_selected.mean(axis=1)
 
     # 📉 Graphe
-    fig, ax = plt.subplots(figsize=(12, 6))
+    import plotly.graph_objects as go
+
+    fig = go.Figure()
+
     for col in df_selected.columns:
-        style = {"label": col}
         if col == "Mix valorisé":
-            style.update({"color": "black", "linewidth": 2, "linestyle": "--"})
-        ax.plot(df_selected.index, df_selected[col], **style)
-    ax.set_title(f"Comparaison des ETFs (Base 100 au {date_base.date()})")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Performance")
-    ax.legend()
-    ax.grid(True)
-    st.pyplot(fig)
+            fig.add_trace(go.Scatter(
+                x=df_selected.index,
+                y=df_selected[col],
+                mode="lines",
+                name=col,
+                line=dict(color="black", width=2, dash="dash")
+            ))
+        else:
+            fig.add_trace(go.Scatter(
+                x=df_selected.index,
+                y=df_selected[col],
+                mode="lines",
+                name=col
+            ))
+
+    fig.update_layout(
+        title=f"Comparaison des ETFs (Base 100 au {date_base.date()})",
+        xaxis_title="Date",
+        yaxis_title="Prix (€)",
+        dragmode=False,  # Désactive le zoom au clic
+        template="plotly_white",
+        legend=dict(
+            orientation="h",        # Légende horizontale
+            yanchor="bottom",
+            y=-0.4,                 # Position verticale (en dessous du graphique)
+            xanchor="center",
+            x=0.5,                  # Centrée horizontalement
+            bordercolor="gray",
+            borderwidth=0.5,
+        ),
+        height=500
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
 
     # 🟢 Fonction de coloration
     def color_variation(val):

@@ -1,9 +1,6 @@
 # Pour Streamlit Cloud
 streamlit==1.44.1
 pandas==2.2.3
-numpy==2.2.4
-matplotlib==3.10.1
-matplotlib-inline==0.1.7
 google-auth==2.39.0
 google-auth-oauthlib==1.2.2
 google-cloud-bigquery==3.31.0

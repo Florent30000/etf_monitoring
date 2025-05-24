@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
+from datetime import timedelta
 from bq_utils_streamlit import get_bigquery_client
 
 def run():
