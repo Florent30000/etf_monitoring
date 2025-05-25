@@ -1,21 +1,18 @@
 import streamlit as st
 import pandas as pd
 from bq_utils_streamlit import get_bigquery_client
+import plotly.graph_objects as go
 
 def run():
-    # 📌 Titre
     st.subheader("📈 Portefeuille personnalisé : croisement des ETF")
 
-    # 🔌 Connexion à BigQuery
     client = get_bigquery_client()
 
-    # 🧠 Chargement des données
     @st.cache_data
     def charger_donnees():
         project_id = "etf-monitoring"
         dataset_id = "etf_data"
 
-        # DTLA + conversion USD -> EUR
         df_dtla = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.dtla_l`").to_dataframe()
         df_fx = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.eur_usd_parity`").to_dataframe()
         df_dtla["Date"] = pd.to_datetime(df_dtla["Date"])
@@ -25,7 +22,6 @@ def run():
         df_dtla["Close"] = df_dtla["Close"] / df_dtla["FX"]
         df_dtla = df_dtla[["Date", "Close"]].set_index("Date")
 
-        # R1VL + conversion USD -> EUR
         df_r1vl = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.r1vl_lse`").to_dataframe()
         df_fx = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.eur_usd_parity`").to_dataframe()
         df_r1vl["Date"] = pd.to_datetime(df_r1vl["Date"])
@@ -35,7 +31,6 @@ def run():
         df_r1vl["Close"] = df_r1vl["Close"] / df_r1vl["FX"]
         df_r1vl = df_r1vl[["Date", "Close"]].set_index("Date")
 
-        # Autres ETF
         def charger_etf(nom_table):
             df = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.{nom_table}`").to_dataframe()
             df["Date"] = pd.to_datetime(df["Date"])
@@ -57,9 +52,8 @@ def run():
         )
 
     (df_dtla, df_r1vl, df_xd9u, df_xgdu, df_zpr1, df_xdew, df_rtwo, 
-    df_xmld, df_sxr8, df_nukl, df_xdw0, df_delg) = charger_donnees()
+     df_xmld, df_sxr8, df_nukl, df_xdw0, df_delg) = charger_donnees()
 
-    # 🔗 Fusion
     df_all = pd.concat([
         df_dtla.rename(columns={"Close": "Oblig. US LT"}),
         df_xd9u.rename(columns={"Close": "MSCI USA"}),
@@ -74,30 +68,10 @@ def run():
         df_xdw0.rename(columns={"Close": "Fossiles Monde"}),
         df_delg.rename(columns={"Close": "Renouvellable Monde"})
     ], axis=1)
-    df_all.dropna(inplace=True)
 
-    # 📅 Dates valides (élimine les jours avec variation nulle)
-    df_diff = df_all.diff().dropna()
-    valid_dates = df_diff[(df_diff != 0).all(axis=1)].index
-    date_labels = [d.strftime("%Y-%m-%d") for d in valid_dates]
-    date_mapping = dict(zip(date_labels, valid_dates))
-
-    # 📍 Sélection de la date base 100
-    selected_label_base = st.select_slider(
-        "📅 Choisissez la date d’origine base 100 pour comparaison :",
-        options=date_labels,
-        value=date_labels[0]
-    )
-    date_base = date_mapping[selected_label_base]
-
-    # 📈 Rebase
-    df_base100 = df_all / df_all.loc[date_base] * 100
-    df_base100 = df_base100[df_base100.index >= date_base]
-
-    # 📊 Sélection des ETF
-    etf_options = list(df_base100.columns)
+    etf_options = list(df_all.columns)
     default_selection = ["MSCI USA", "Or physique", "SP500 Equal weight",
-                          "Intelligence Artificielle", "Nucléaire Monde"]
+                        "Intelligence Artificielle", "Nucléaire Monde"]
     etf_selection = st.multiselect(
         "🔍 Sélectionnez les ETFs à afficher :",
         options=etf_options,
@@ -108,44 +82,56 @@ def run():
         st.error("Veuillez sélectionner au minimum 2 ETFs.")
         return
 
-    # 🔀 Données filtrées + mix
+    df_selection = df_all[etf_selection].copy()
+    df_selection = df_selection.dropna(how="any")
+
+    # Vérification si aucune date n’est commune aux ETFs sélectionnés
+    if df_selection.empty:
+        st.error("Aucune date commune entre les ETFs sélectionnés. Veuillez modifier votre sélection.")
+        return
+
+    # Création des options de date pour le select_slider
+    valid_dates = df_selection.index
+    date_labels = [d.strftime("%Y-%m-%d") for d in valid_dates]
+
+    selected_label_base = st.select_slider(
+        "📅 Choisissez la date d’origine base 100 pour comparaison :",
+        options=date_labels,
+        key="slider_base100"
+    )
+
+    # Conversion en datetime
+    date_base = pd.to_datetime(selected_label_base)
+
+    # Création du DataFrame base 100 à partir de la date sélectionnée
+    df_base100 = df_selection[df_selection.index >= date_base]
+    df_base100 = df_base100 / df_base100.loc[date_base] * 100
+
     df_selected = df_base100[etf_selection].copy()
     df_selected["Mix valorisé"] = df_selected.mean(axis=1)
 
-    # 📉 Graphe
-    import plotly.graph_objects as go
-
     fig = go.Figure()
-
     for col in df_selected.columns:
-        if col == "Mix valorisé":
-            fig.add_trace(go.Scatter(
-                x=df_selected.index,
-                y=df_selected[col],
-                mode="lines",
-                name=col,
-                line=dict(color="black", width=2, dash="dash")
-            ))
-        else:
-            fig.add_trace(go.Scatter(
-                x=df_selected.index,
-                y=df_selected[col],
-                mode="lines",
-                name=col
-            ))
+        fig.add_trace(go.Scatter(
+            x=df_selected.index,
+            y=df_selected[col],
+            mode="lines",
+            name=col,
+            line=dict(color="black", width=2, dash="dash") if col == "Mix valorisé" else None
+        ))
 
     fig.update_layout(
         title=f"Comparaison des ETFs (Base 100 au {date_base.date()})",
         xaxis_title="Date",
         yaxis_title="Prix (€)",
-        dragmode=False,  # Désactive le zoom au clic
+        dragmode=False,
         template="plotly_white",
         legend=dict(
-            orientation="h",        # Légende horizontale
+            orientation="h",
             yanchor="bottom",
-            y=-0.4,                 # Position verticale (en dessous du graphique)
+            y=-0.4,
             xanchor="center",
-            x=0.5,                  # Centrée horizontalement
+            x=0.5,
             bordercolor="gray",
             borderwidth=0.5,
         ),
@@ -154,8 +140,6 @@ def run():
 
     st.plotly_chart(fig, use_container_width=True)
 
-
-    # 🟢 Fonction de coloration
     def color_variation(val):
         try:
             val_float = float(val.strip('%'))
@@ -163,7 +147,6 @@ def run():
         except:
             return None
 
-    # 🧮 Calculs variation + CAGR
     duration_days = (df_base100.index[-1] - date_base).days
     n_years = duration_days / 365.25
     variation_pct = (df_selected.iloc[-1] / df_selected.loc[date_base] - 1) * 100
@@ -172,7 +155,6 @@ def run():
         for col in df_selected.columns
     }
 
-    # 📋 Tableau récapitulatif
     variation_df = pd.DataFrame({
         "Variation (%)": variation_pct,
         "Variation Annualisée (%)": pd.Series(cagr_pct)
