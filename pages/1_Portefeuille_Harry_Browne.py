@@ -16,17 +16,17 @@ from sections.st_Harry_Browne import run as run_compare
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
-    ["Portefeuille Harry Browne","Obligations US LT", "MSCI USA", "Or physique", "Obligations US CT"]
+    ["Portefeuille Harry Browne","Oblig. US LT (€)", "MSCI USA", "Or physique", "Oblig. US CT"]
 )
 
 # Lancer la fonction appropriée en fonction de la sélection
 if page == "Portefeuille Harry Browne":
     run_compare()
-elif page == "Obligations US LT":
+elif page == "Oblig. US LT (€)":
     run_DTLA()
 elif page == "MSCI USA":
     run_XD9U()
 elif page == "Or physique":
     run_XGDU()
-elif page == "Obligations US CT":
+elif page == "Oblig. US CT":
     run_ZPR1()

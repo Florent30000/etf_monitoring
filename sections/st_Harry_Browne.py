@@ -41,7 +41,7 @@ def run():
     df_dtla, df_xd9u, df_xgdu, df_zpr1 = charger_donnees()
 
     df_all = pd.concat([
-        df_dtla.rename(columns={"Close": "Oblig. US LT"}),
+        df_dtla.rename(columns={"Close": "Oblig. US LT (€)"}),
         df_xd9u.rename(columns={"Close": "MSCI USA"}),
         df_xgdu.rename(columns={"Close": "Or physique"}),
         df_zpr1.rename(columns={"Close": "Oblig. US CT"})
