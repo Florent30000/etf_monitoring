@@ -57,10 +57,11 @@ st.markdown(
 
 
 st.write("""
-Informations techniques :
+Informations complémentaires sur les ETF:
 """)
 st.write("""
-    - Les ETF sont tous sont à dividendes réinvestis
-    - Ils sont mis à jour quotidiennement à 7h du matin sur la base du cours de clôture de la veille.
-    - Soit ils sont directement côtés en EURO, soit en DOLLAR et alors convertis en EURO date (cours ETF) pour date (Parité USD-EUR)
+    - Ils sont tous à dividendes réinvestis
+    - Leur mise à jour est quotidienne : 7h du matin sur la base du cours de clôture de la veille.
+    - Ils sont directement côtés en EURO si possible, sinon ils sont convertis du DOLLAR à l'EURO \
+         date (cours ETF) pour date (Parité USD-EUR) et la mention (€) est précisée.
 """)

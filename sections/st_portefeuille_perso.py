@@ -55,11 +55,11 @@ def run():
      df_xmld, df_sxr8, df_nukl, df_xdw0, df_delg) = charger_donnees()
 
     df_all = pd.concat([
-        df_dtla.rename(columns={"Close": "Oblig. US LT"}),
+        df_dtla.rename(columns={"Close": "Oblig. US LT (€)"}),
         df_xd9u.rename(columns={"Close": "MSCI USA"}),
         df_xgdu.rename(columns={"Close": "Or physique"}),
         df_zpr1.rename(columns={"Close": "Oblig. US CT"}),
-        df_r1vl.rename(columns={"Close": "Largest 1000 US CAP"}),
+        df_r1vl.rename(columns={"Close": "Largest 1000 US CAP (€)"}),
         df_xdew.rename(columns={"Close": "SP500 Equal weight"}),
         df_rtwo.rename(columns={"Close": "Small cap US"}),
         df_xmld.rename(columns={"Close": "Intelligence Artificielle"}),

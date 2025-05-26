@@ -24,15 +24,15 @@ from sections.st_section_XMLD import run as run_XMLD
 # Créer un menu de navigation dans la barre latérale (sans les pages qui apparaissent automatiquement)
 page = st.sidebar.radio(
     "Sélectionner un ETF à afficher",
-    ["Portefeuille personnalisé","Oblig. US LT", "MSCI USA", "Or physique", "Oblig. US CT",
-     "SP500", "SP500 Equal weight", "Largest 1000 US CAP (en EUR)",  "Small cap US","Nucléaire Monde",
+    ["Portefeuille personnalisé","Oblig. US LT (€)", "MSCI USA", "Or physique", "Oblig. US CT",
+     "SP500", "SP500 Equal weight", "Largest 1000 US CAP (€)",  "Small cap US","Nucléaire Monde",
      "Fossiles Monde", "Renouvelable Monde", "Intelligence Artificielle"]
 )
 
 # Lancer la comparaison
 if page == "Portefeuille personnalisé":
     run_perso()
-elif page == "Oblig. US LT":
+elif page == "Oblig. US LT (€)":
     run_DTLA()
 elif page == "MSCI USA":
     run_XD9U()
@@ -44,7 +44,7 @@ elif page == "SP500":
     run_SXR8()
 elif page == "SP500 Equal weight":
     run_XDEW()
-elif page == "Largest 1000 US CAP (en EUR)":
+elif page == "Largest 1000 US CAP (€)":
     run_R1VL()
 elif page == "Small cap US":
     run_RTW0()
