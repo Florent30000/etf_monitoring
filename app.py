@@ -33,18 +33,31 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.write("""
-    - Aux ETF sectorisés : capitalisations US, énergie, Intelligence artificielle
+    - Aux ETF catégorisés : géographiquement WORLD / US / EUROPE / ASIA stocks, \
+         par secteur spécifique et hard assets (or et bitcoin)
 """)
 st.markdown(
-    '<a href="/Capitalisations_US" target="_self">👉 Capitalisations US</a>',
+    '<a href="/WORLD_stocks" target="_self">👉 WORLD stocks</a>',
     unsafe_allow_html=True
 )
 st.markdown(
-    '<a href="/Energies" target="_self">👉 énergies</a>',
+    '<a href="/US_stocks" target="_self">👉 US stocks</a>',
     unsafe_allow_html=True
 )
 st.markdown(
-    '<a href="/Intelligence_Artificielle" target="_self">👉 Intelligence Artificielle</a>',
+    '<a href="/EUROPE_stocks" target="_self">👉 EUROPE stocks</a>',
+    unsafe_allow_html=True
+)
+st.markdown(
+    '<a href="/ASIA_stocks" target="_self">👉 ASIA stocks</a>',
+    unsafe_allow_html=True
+)
+st.markdown(
+    '<a href="/SECTOR_specific" target="_self">👉 SECTOR specific</a>',
+    unsafe_allow_html=True
+)
+st.markdown(
+    '<a href="/HARD_ASSETS" target="_self">👉 HARD ASSETS</a>',
     unsafe_allow_html=True
 )
 st.write("""
@@ -60,8 +73,9 @@ st.write("""
 Informations complémentaires sur les ETF:
 """)
 st.write("""
-    - Ils sont tous à dividendes réinvestis
+    - Afin d'être comparables, ils sont tous :
+         - à dividendes réinvestis dans l'ETF
+         - en mode de réplication physique
+         - soit directement côté en EURO, soit convertis du DOLLAR à l'EURO
     - Leur mise à jour est quotidienne : 7h du matin sur la base du cours de clôture de la veille.
-    - Ils sont directement côtés en EURO si possible, sinon ils sont convertis du DOLLAR à l'EURO \
-         date (cours ETF) pour date (Parité USD-EUR) et la mention (€) est précisée.
 """)
