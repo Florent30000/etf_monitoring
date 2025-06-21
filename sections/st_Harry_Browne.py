@@ -32,19 +32,19 @@ def run():
             df["Date"] = pd.to_datetime(df["Date"])
             return df.set_index("Date")
 
-        df_xd9u = charger_etf("xd9u_xetra")
+        df_sxr8 = charger_etf("sxr8_xetra")
         df_xgdu = charger_etf("xgdu_xetra")
         df_zpr1 = charger_etf("zpr1_xetra")
 
-        return df_dtla, df_xd9u, df_xgdu, df_zpr1
+        return df_dtla, df_sxr8, df_xgdu, df_zpr1
 
-    df_dtla, df_xd9u, df_xgdu, df_zpr1 = charger_donnees()
+    df_dtla, df_sxr8, df_xgdu, df_zpr1 = charger_donnees()
 
     df_all = pd.concat([
-        df_dtla.rename(columns={"Close": "Oblig. US LT (€)"}),
-        df_xd9u.rename(columns={"Close": "MSCI USA"}),
-        df_xgdu.rename(columns={"Close": "Or physique"}),
-        df_zpr1.rename(columns={"Close": "Oblig. US CT"})
+        df_dtla.rename(columns={"Close": "USD T-Bond 20 yrs (€)"}),
+        df_sxr8.rename(columns={"Close": "S&P 500"}),
+        df_xgdu.rename(columns={"Close": "Physical Gold"}),
+        df_zpr1.rename(columns={"Close": "USD T-Bill 1-3 Month"})
     ], axis=1)
 
     # Sélection des ETFs

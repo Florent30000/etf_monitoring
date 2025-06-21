@@ -22,14 +22,14 @@ def run():
         df_dtla["Close"] = df_dtla["Close"] / df_dtla["FX"]
         df_dtla = df_dtla[["Date", "Close"]].set_index("Date")
 
-        df_r1vl = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.r1vl_lse`").to_dataframe()
+        df_xdwi = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.xdwi_xetra`").to_dataframe()
         df_fx = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.eur_usd_parity`").to_dataframe()
-        df_r1vl["Date"] = pd.to_datetime(df_r1vl["Date"])
+        df_xdwi["Date"] = pd.to_datetime(df_xdwi["Date"])
         df_fx["Date"] = pd.to_datetime(df_fx["Date"])
         df_fx.rename(columns={"Close": "FX"}, inplace=True)
-        df_r1vl = pd.merge(df_r1vl, df_fx, on="Date", how="inner")
-        df_r1vl["Close"] = df_r1vl["Close"] / df_r1vl["FX"]
-        df_r1vl = df_r1vl[["Date", "Close"]].set_index("Date")
+        df_xdwi = pd.merge(df_xdwi, df_fx, on="Date", how="inner")
+        df_xdwi["Close"] = df_xdwi["Close"] / df_xdwi["FX"]
+        df_xdwi = df_xdwi[["Date", "Close"]].set_index("Date")
 
         def charger_etf(nom_table):
             df = client.query(f"SELECT Date, Close FROM `{project_id}.{dataset_id}.{nom_table}`").to_dataframe()
@@ -38,40 +38,47 @@ def run():
 
         return (
             df_dtla,
-            df_r1vl,
-            charger_etf("xd9u_xetra"),
+            df_xdwi,
             charger_etf("xgdu_xetra"),
             charger_etf("zpr1_xetra"),
-            charger_etf("xdew_xetra"),
             charger_etf("rtwo_as"),
-            charger_etf("xmld_xetra"),
             charger_etf("sxr8_xetra"),
-            charger_etf("nukl_xetra"),
-            charger_etf("xdw0_xetra"),
-            charger_etf("delg_xetra")
+            charger_etf("eunl_xetra"),
+            charger_etf("is3n_xetra"),
+            charger_etf("xdwt_xetra"),
+            charger_etf("xdwh_xetra"),
+            charger_etf("bitc_xetra"),
+            charger_etf("eunk_xetra"),
+            charger_etf("xxsc_xetra"),
+            charger_etf("etlk_xetra"),
+            charger_etf("cebl_xetra")
         )
 
-    (df_dtla, df_r1vl, df_xd9u, df_xgdu, df_zpr1, df_xdew, df_rtwo, 
-     df_xmld, df_sxr8, df_nukl, df_xdw0, df_delg) = charger_donnees()
+    (df_dtla, df_xdwi, df_xgdu, df_zpr1, df_rtwo,
+     df_sxr8, df_eunl, df_is3n, df_xdwt, df_xdwh, df_bitc,
+     df_eunk, df_xxsc, df_etlk, df_cebl ) = charger_donnees()
 
     df_all = pd.concat([
-        df_dtla.rename(columns={"Close": "Oblig. US LT (€)"}),
-        df_xd9u.rename(columns={"Close": "MSCI USA"}),
-        df_xgdu.rename(columns={"Close": "Or physique"}),
-        df_zpr1.rename(columns={"Close": "Oblig. US CT"}),
-        df_r1vl.rename(columns={"Close": "Largest 1000 US CAP (€)"}),
-        df_xdew.rename(columns={"Close": "SP500 Equal weight"}),
-        df_rtwo.rename(columns={"Close": "Small cap US"}),
-        df_xmld.rename(columns={"Close": "Intelligence Artificielle"}),
-        df_sxr8.rename(columns={"Close": "SP500"}),
-        df_nukl.rename(columns={"Close": "Nucléaire Monde"}),
-        df_xdw0.rename(columns={"Close": "Fossiles Monde"}),
-        df_delg.rename(columns={"Close": "Renouvellable Monde"})
+        df_dtla.rename(columns={"Close": "USD T-Bond 20 yrs"}),
+        df_xdwi.rename(columns={"Close": "MSCI World Industrials"}),
+        df_xgdu.rename(columns={"Close": "Physical Gold"}),
+        df_zpr1.rename(columns={"Close": "USD T-Bill 1-3 Month"}),
+        df_rtwo.rename(columns={"Close": "Russel 2000 US"}),
+        df_sxr8.rename(columns={"Close": "S&P 500"}),
+        df_eunl.rename(columns={"Close": "MSCI World Large cap"}),
+        df_is3n.rename(columns={"Close": "MSCI World Emerging markets"}),
+        df_xdwt.rename(columns={"Close": "MSCI World IT"}),
+        df_xdwh.rename(columns={"Close": "MSCI World Health Care"}),
+        df_bitc.rename(columns={"Close": "Physical Bitcoin"}),
+        df_eunk.rename(columns={"Close": "MSCI Europe Large cap"}),
+        df_xxsc.rename(columns={"Close": "MSCI Europe Small Cap"}),
+        df_etlk.rename(columns={"Close": "MSCI Asia Large cap"}),
+        df_cebl.rename(columns={"Close": "MSCI Asia Emerging markets"})
     ], axis=1)
 
     etf_options = list(df_all.columns)
-    default_selection = ["MSCI USA", "Or physique", "SP500 Equal weight",
-                        "Intelligence Artificielle", "Nucléaire Monde"]
+    default_selection = ["MSCI World Large cap", "Physical Gold", "Physical Bitcoin"
+                        ]
     etf_selection = st.multiselect(
         "🔍 Sélectionnez les ETFs à afficher :",
         options=etf_options,

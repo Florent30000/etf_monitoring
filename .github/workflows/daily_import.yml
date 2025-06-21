@@ -34,26 +34,11 @@ jobs:
       - name: Lancer le script d'import pour eur_usd_parity
         run: python imports/import_bq_eur_usd_parity.py
 
-      - name: Lancer le script d'import pour XD9U
-        run: python imports/import_bq_XD9U.py
-
       - name: Lancer le script d'import pour XGDU
         run: python imports/import_bq_XGDU.py
 
       - name: Lancer le script d'import pour ZPR1
         run: python imports/import_bq_ZPR1.py
-
-      - name: Lancer le script d'import pour DELG
-        run: python imports/import_bq_DELG.py
-
-      - name: Lancer le script d'import pour NUKL
-        run: python imports/import_bq_NUKL.py
-
-      - name: Lancer le script d'import pour R1VL
-        run: python imports/import_bq_R1VL.py
-
-      - name: Lancer le script d'import pour RTWO
-        run: python imports/import_bq_RTWO.py
 
       - name: Lancer le script d'import pour SXR8
         run: python imports/import_bq_SXR8.py
@@ -61,8 +46,44 @@ jobs:
       - name: Lancer le script d'import pour XDEW
         run: python imports/import_bq_XDEW.py
 
-      - name: Lancer le script d'import pour XDW0
-        run: python imports/import_bq_XDW0.py
+      - name: Lancer le script d'import pour RTWO
+        run: python imports/import_bq_RTWO.py
+
+      - name: Lancer le script d'import pour NUKL
+        run: python imports/import_bq_NUKL.py
+
+      - name: Lancer le script d'import pour XDWO
+        run: python imports/import_bq_XDWO.py
 
       - name: Lancer le script d'import pour XMLD
         run: python imports/import_bq_XMLD.py
+
+      - name: Lancer le script d'import pour EUNL
+        run: python imports/import_bq_EUNL.py
+
+      - name: Lancer le script d'import pour IS3N
+        run: python imports/import_bq_IS3N.py
+
+      - name: Lancer le script d'import pour XDWT
+        run: python imports/import_bq_XDWT.py
+
+      - name: Lancer le script d'import pour XDWH
+        run: python imports/import_bq_XDWH.py
+
+      - name: Lancer le script d'import pour XDWI
+        run: python imports/import_bq_XDWI.py
+
+      - name: Lancer le script d'import pour BITC
+        run: python imports/import_bq_BITC.py
+
+      - name: Lancer le script d'import pour EUNK
+        run: python imports/import_bq_EUNK.py
+
+      - name: Lancer le script d'import pour XXSC
+        run: python imports/import_bq_XXSC.py
+
+      - name: Lancer le script d'import pour ETLK
+        run: python imports/import_bq_ETLK.py
+
+      - name: Lancer le script d'import pour CEBL
+        run: python imports/import_bq_CEBL.py
