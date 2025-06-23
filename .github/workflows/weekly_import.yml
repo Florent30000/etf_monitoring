@@ -1,4 +1,4 @@
-name: Importer les données ETF chaque jour ouvré
+name: Weekly import ETF
 
 on:
   schedule:
