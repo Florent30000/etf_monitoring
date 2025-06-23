@@ -1,4 +1,4 @@
-name: Importer les données ETF chaque jour ouvré
+name: Dayly (working) import ETF
 
 on:
   schedule:
@@ -52,8 +52,8 @@ jobs:
       - name: Lancer le script d'import pour NUKL
         run: python imports/import_bq_NUKL.py
 
-      - name: Lancer le script d'import pour XDWO
-        run: python imports/import_bq_XDWO.py
+      - name: Lancer le script d'import pour XDW0
+        run: python imports/import_bq_XDW0.py
 
       - name: Lancer le script d'import pour XMLD
         run: python imports/import_bq_XMLD.py
