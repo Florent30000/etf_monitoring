@@ -4,6 +4,9 @@ venv/
 # Données
 *.csv
 data/
+notebook/
+imports/SQLite/
+
 
 # Cache et fichiers compilés
 __pycache__/
