@@ -1,4 +1,9 @@
 # bq_utils.py
+# Ce module fournit une fonction get_bigquery_client()
+# qui se connecte à BigQuery via les credentials stockés
+# dans st.secrets, afin d’utiliser BigQuery dans une
+# application Streamlit (en local ou sur Streamlit Cloud),
+# avec mise en cache du client pour de meilleures performances.
 
 import streamlit as st
 import json
