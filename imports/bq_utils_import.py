@@ -1,4 +1,12 @@
 # bq_utils_import.py
+# fournit une fonction get_bigquery_client() 
+# qui permet de créer automatiquement un client 
+# BigQuery en utilisant la meilleure méthode 
+# d’authentification disponible selon l’environnement 
+# (GitHub Actions, variable d’environnement locale 
+# ou authentification gcloud).
+# cette fonction est appelée dans tous les scripts
+# d'import dans GCP des données
 
 import os
 import json
